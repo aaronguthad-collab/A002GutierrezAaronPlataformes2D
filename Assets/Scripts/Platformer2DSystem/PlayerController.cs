@@ -1,9 +1,5 @@
-using System;
-using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
 namespace Platformer2DSystem.Example
 {
@@ -18,23 +14,13 @@ namespace Platformer2DSystem.Example
         [SerializeField] private float jumpMovementMultiplier = 0.8f;
         [SerializeField] private float doubleJumpMultiplier = 0.9f;
 
-        [Header("Lives Settings")]
-        private int lives = 3;
-        [SerializeField] private int maxLives = 3;
-        [SerializeField] private int enemyCooldown = 100;
-        private int enemyCooldownCount;
-        private bool isHit = false;
-        [SerializeField] private Slider slider;
-
-        [Header("Coins Settings")]
-        private int coins = 0;
-        [SerializeField] private TextMeshProUGUI coinsText;
 
         private Actor actor;
         private Runner runner;
         private Jumper jumper;
 
         private int remainingJumps;
+        private float controlLockedUntil;
         private Timer jumpBufferTimer;
 
         private InputAction moveAction;
@@ -51,8 +37,6 @@ namespace Platformer2DSystem.Example
             actor = GetComponent<Actor>();
             runner = GetComponent<Runner>();
             jumper = GetComponent<Jumper>();
-
-            lives = maxLives;
 
             jumpBufferTimer = Timer.Frames(jumpBufferFrames);
             remainingJumps = maxJumps;
@@ -103,26 +87,20 @@ namespace Platformer2DSystem.Example
 
         private void Update()
         {
-            //Debug.Log(actor.velocity.y);
-
-            if (isHit)
-            {
-                enemyCooldownCount++;
-
-                if (enemyCooldownCount >= enemyCooldown)
-                {
-                    enemyCooldownCount = 0;
-                    isHit = false;
-                }
-            }
-
             UpdateMovement();
             UpdateJumping();
+        }
+
+        public void LockControl(float seconds)
+        {
+            controlLockedUntil = Time.time + seconds;
         }
 
         // --- MOVEMENT ---
         private void UpdateMovement()
         {
+            if (Time.time < controlLockedUntil) return;
+
             float dirX = moveInput.x;
 
             if (Mathf.Abs(dirX) < 0.01f)
@@ -160,6 +138,7 @@ namespace Platformer2DSystem.Example
                     float multiplier = isDoubleJump ? doubleJumpMultiplier : 1f;
                     jumper.Jump(multiplier);
                     remainingJumps--;
+                    AudioManager.Instance.PlaySfx(isDoubleJump ? AudioManager.Instance.DoubleJump : AudioManager.Instance.Jump, 0.7f, 0.05f);
                 }
 
                 jumpBufferTimer.Stop();
@@ -181,49 +160,5 @@ namespace Platformer2DSystem.Example
             jumper.CancelJump();
         }
 
-        private void OnTriggerEnter2D(Collider2D collision)
-        {
-            if (collision.transform.tag == "Portal")
-            {
-                collision.gameObject.GetComponent<Portal>().GoToScene();
-            }
-
-            if (collision.transform.tag == "Coin")
-            {
-                Destroy(collision.gameObject);
-
-                coins++;
-                coinsText.text = coins.ToString();
-            }
-
-            if (collision.transform.tag == "Enemy")
-            {
-                if (actor.velocity.y < 0)
-                {
-                    actor.velocity.y = 50f;
-                    Destroy(collision.transform.parent.gameObject);
-                    isHit = true;
-                }
-                else
-                {
-                    if (!isHit)
-                    {
-                        lives--;
-                        slider.value = (float)lives / (float)maxLives;
-                        actor.velocity.x =
-                            transform.position.x > collision.transform.position.x ?
-                            50f : -50f;
-
-                        isHit = true;
-                    }
-
-
-                    if (lives < 0)
-                    {
-                        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-                    }
-                }
-            }
-        }
     }
 }

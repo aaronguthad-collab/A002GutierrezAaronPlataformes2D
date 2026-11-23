@@ -1,25 +1,34 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class Portal : MonoBehaviour
 {
-
     [SerializeField] private string sceneToLoad;
+    [SerializeField] private float spinSpeed = 90f;
+    [SerializeField] private Transform visual;
+
+    private bool used;
+
+    public string SceneToLoad
+    {
+        get => sceneToLoad;
+        set => sceneToLoad = value;
+    }
+
+    public void Enter()
+    {
+        if (used || string.IsNullOrEmpty(sceneToLoad)) return;
+        used = true;
+        AudioManager.Instance.PlaySfx(AudioManager.Instance.Portal);
+        SceneLoader.Load(sceneToLoad);
+    }
 
     public void GoToScene()
     {
-        SceneManager.LoadScene(sceneToLoad);
+        Enter();
     }
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private void Update()
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        if (visual != null) visual.Rotate(0f, 0f, spinSpeed * Time.deltaTime);
     }
 }

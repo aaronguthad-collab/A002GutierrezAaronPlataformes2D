@@ -1,0 +1,34 @@
+[PASS] LevelFinal loaded
+[PASS] LevelFinal has a player and a boss
+[PASS] Boss starts with 3 lives (lives=3)
+[PASS] LevelFinal has other enemies besides the boss (4)
+[PASS] Boss contact damage = 2 (normal enemies deal 1)
+[PASS] Boss still has 3 lives before the stomp test (lives=3)
+[PASS] Stomp #1: boss lives 3 -> 2
+[PASS] Stomp #2: boss lives 2 -> 1
+[PASS] Stomp #3: boss lives 1 -> 0
+[PASS] Victory panel shown after defeating the boss
+[PASS] Victory text = "YOU WON!"
+[PASS] Credits opened automatically 10,2s after the boss died
+[PASS] Credits show the author's name
+[PASS] Credits has a Back button
+[PASS] Back button opens the main menu
+[PASS] Main menu has Play, Credits and Quit
+[PASS] Play opens Level 1
+[PASS] Level1: 5 normal enemies, 0 flying
+[PASS] Coin collected: wallet=1, UI="x 1"
+[PASS] Snail contact damage: health 6 -> 5
+[PASS] Health bar updated (value=0,83)
+[PASS] Jumping on a snail defeats it
+[PASS] Defeated snail removed from the level
+[PASS] Falling into a pit kills the player
+[PASS] Level restarts after dying
+[PASS] Level 1 portal opens Level 2
+[PASS] Level2: 5 normal enemies, 5 flying
+[PASS] Jumping on a bee defeats it
+[PASS] Level 2 portal opens the final level
+[PASS] Splash shows the GINEBRÓ GAMES logo
+[PASS] Splash goes to the main menu
+[PASS] Background music playing (MenuTheme)
+[PASS] Sound effects assigned
+RESULT: ALL CHECKS PASSED
